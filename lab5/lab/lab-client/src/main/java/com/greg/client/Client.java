@@ -1,39 +1,45 @@
 package com.greg.client;
 
-import com.greg.client.commands.*;
-import com.greg.client.util.CommandManager;
-import com.greg.client.util.OrganisationStorage;
 
+import com.greg.client.util.ClientCommandManager;
+
+import java.io.IOException;
+import java.net.*;
 import java.util.Scanner;
 
 public final class Client {
+    private static DatagramSocket socket;
+    private static InetAddress address;
+
     private Client() {
         throw new UnsupportedOperationException("This is an utility class and can not be instantiated");
     }
 
+
     public static void main(String[] args) {
+
         Scanner scanner = new Scanner(System.in);
-        CommandManager manager = new CommandManager();
-        OrganisationStorage collection = new OrganisationStorage();
-        manager.getCommands().put("help", new HelpCommand(manager.getCommands()));
-        manager.getCommands().put("info", new InfoCommand(collection));
-        manager.getCommands().put("show", new ShowCommand(collection));
-        manager.getCommands().put("add", new AddCommand(collection));
-        manager.getCommands().put("update", new UpdateCommand(collection));
-        manager.getCommands().put("remove_by_id", new RemoveByIdCommand(collection));
-        manager.getCommands().put("clear", new ClearCommand(collection));
-        manager.getCommands().put("save", new SaveCommand(collection));
-        manager.getCommands().put("execute_script", new ExecuteScriptCommand(manager));
-        manager.getCommands().put("exit", new ExitCommand(manager));
-        manager.getCommands().put("remove_head", new RemoveHeadCommand(collection));
-        manager.getCommands().put("remove_lower", new RemoveLowerCommand(collection));
-        manager.getCommands().put("history", new HistoryCommand(manager.getHistory()));
-        manager.getCommands().put("filter_contains_name", new FilterContainsNameCommand(collection));
-        manager.getCommands().put("print_ascending", new PrintAscendingCommand(collection));
-        manager.getCommands().put("print_field_descending_employees_count", new PrintFieldDescendingCommand(collection));
+        ClientCommandManager manager = new ClientCommandManager();
+        byte[] buf = new byte[4096];
+        try {
+            socket = new DatagramSocket();
+            address = InetAddress.getByName("localhost");
+        } catch (SocketException | UnknownHostException e) {
+            e.printStackTrace();
+        }
+
 
         while (manager.isProgrammState()) {
-            manager.executeCommand(scanner.nextLine());
+            manager.vallidateCommand(scanner.nextLine());
+            DatagramPacket packet = new DatagramPacket(buf, buf.length);
+            try {
+                socket.receive(packet);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String received = new String(
+                    packet.getData(), 0, packet.getLength());
+            System.out.println(received);
         }
     }
 
