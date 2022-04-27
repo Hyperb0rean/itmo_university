@@ -2,7 +2,10 @@ package com.greg.server.util.io;
 
 import com.greg.server.util.ServerCommandManager;
 
+import java.io.IOException;
 import java.net.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
 import java.nio.charset.StandardCharsets;
 
 public class ResponseOutput implements Writable{
@@ -10,7 +13,6 @@ public class ResponseOutput implements Writable{
 
     private DatagramSocket socket;
     private byte[] buf = new byte[4096];
-    private SocketAddress currentClient;
     private ServerCommandManager manager;
 
     public ResponseOutput(ServerCommandManager manager) {
@@ -19,22 +21,27 @@ public class ResponseOutput implements Writable{
 
     @Override
     public boolean write(String output) {
+        ByteBuffer buffer = ByteBuffer.wrap(output.getBytes(StandardCharsets.UTF_8));
         try {
+            DatagramChannel server = DatagramChannel.open().bind(null);
+            server.send(buffer,manager.getInput().getCurrentClient());
 
-            this.currentClient = manager.getInput().getCurrentClient();
-            this.socket = new DatagramSocket(currentClient);
-        } catch (SocketException  e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Не удалось отослать сообщение на клиент. Подробнее: \n" + e.getMessage());
         }
-        buf = output.getBytes(StandardCharsets.UTF_8);
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, currentClient);
         return true;
     }
 
     @Override
     public boolean error(String errMessage) {
-        buf = errMessage.getBytes(StandardCharsets.UTF_8);
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, currentClient);
+        ByteBuffer buffer = ByteBuffer.wrap(errMessage.getBytes(StandardCharsets.UTF_8));
+        try {
+            DatagramChannel server = DatagramChannel.open().bind(null);
+            server.send(buffer,manager.getInput().getCurrentClient());
+
+        } catch (IOException e) {
+            System.out.println("Не удалось отослать сообщение на клиент. Подробнее: \n" + e.getMessage());
+        }
         return true;
     }
 }

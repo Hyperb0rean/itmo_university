@@ -1,10 +1,12 @@
 package com.greg.server.commands;
 
+import com.greg.server.data.Organization;
 import com.greg.server.exceptions.IllegalArgumentException;
 import com.greg.server.util.CollectionManager;
 import com.greg.server.util.ServerCommandManager;
 
 import java.util.Collections;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class PrintFieldDescendingCommand extends Command {
     private final CollectionManager target;
@@ -28,7 +30,9 @@ public class PrintFieldDescendingCommand extends Command {
 //                for (Organization o : sorted) {
 //                    System.out.println(o.getEmployeesCount());
 //                }
-                target.getOrganizations().stream().map(o -> o.getEmployeesCount()).sorted(Collections.reverseOrder()).forEach(o->this.getManager().getOutput().write(o.toString()));
+                AtomicReference<String> result = new AtomicReference<>("");
+                target.getOrganizations().stream().map(Organization::getEmployeesCount).sorted(Collections.reverseOrder()).forEach(o-> result.set(result + o.toString() + "\n"));
+                this.getManager().getOutput().write(result.get());
                 return true;
             } else throw new IllegalArgumentException("Эта команда не принимает аргументов");
         } catch (IllegalArgumentException e) {

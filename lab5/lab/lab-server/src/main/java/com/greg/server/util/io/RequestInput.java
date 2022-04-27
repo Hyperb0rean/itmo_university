@@ -18,13 +18,8 @@ public class RequestInput implements Readable{
     public RequestInput(int port) {
         this.port = port;
         InetSocketAddress address = new InetSocketAddress("localhost", port);
-        try {
-            DatagramChannel server = DatagramChannel.open().bind(address);
-            this.server = server;
-            System.out.println("Сервер запущен по адресу #" + address);
-        } catch (IOException e) {
-            System.err.println("Произошла ошибка при попытке запустить сервер. Подробнее\n" + e.getMessage());
-        }
+        System.out.println("Сервер запущен по адресу #" + address);
+
     }
 
 
@@ -36,6 +31,15 @@ public class RequestInput implements Readable{
     @Override
     public String read() {
 
+        InetSocketAddress address = new InetSocketAddress("localhost", port);
+        try {
+            DatagramChannel server = DatagramChannel.open().bind(address);
+            this.server = server;
+            System.out.println("Чтение данных...");
+        } catch (IOException e) {
+            System.err.println("Произошла ошибка при попытке чтения данных. Подробнее\n" + e.getMessage());
+        }
+
         ByteBuffer buffer = ByteBuffer.allocate(4096);
         try {
             this.currentClient = server.receive(buffer);
@@ -46,6 +50,7 @@ public class RequestInput implements Readable{
         byte[] bytes = new byte[buffer.remaining()];
         buffer.get(bytes);
         String msg = new String(bytes);
+
         return msg;
     }
 

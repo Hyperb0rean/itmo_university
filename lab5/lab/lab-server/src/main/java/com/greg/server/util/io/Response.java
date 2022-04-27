@@ -2,7 +2,7 @@ package com.greg.server.util.io;
 
 public class Response {
     private String message;
-    private String messageType;
+    private MessageType messageType;
 
     public String getMessage() {
         return message;
@@ -12,11 +12,11 @@ public class Response {
         this.message = message;
     }
 
-    public String getMessageType() {
+    public MessageType getMessageType() {
         return messageType;
     }
 
-    public void setMessageType(String messageType) {
+    public void setMessageType(MessageType messageType) {
         this.messageType = messageType;
     }
 }

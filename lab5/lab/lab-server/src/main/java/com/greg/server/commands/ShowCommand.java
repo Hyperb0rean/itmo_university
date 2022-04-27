@@ -1,9 +1,10 @@
 package com.greg.server.commands;
 
-import com.greg.server.data.Organization;
 import com.greg.server.exceptions.IllegalArgumentException;
 import com.greg.server.util.CollectionManager;
 import com.greg.server.util.ServerCommandManager;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ShowCommand extends Command{
 
@@ -22,11 +23,9 @@ public class ShowCommand extends Command{
     public boolean execute(String argument) {
         try{
             if(argument.isEmpty()){
-                String result = "";
-                for (Organization organization : target.getOrganizations()) {
-                    result+="\n" + organization.toString();
-                }
-                this.getManager().getOutput().write(result);
+                AtomicReference<String> result = new AtomicReference<>("");
+                target.getOrganizations().stream().forEach(o -> result.set(result + o.toString() +"\n"));
+                this.getManager().getOutput().write(result.toString());
                 return true;
             }
             else throw new IllegalArgumentException("Эта команда не принимает аргументов");

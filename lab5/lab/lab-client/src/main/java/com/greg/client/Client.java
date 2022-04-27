@@ -24,6 +24,7 @@ public final class Client {
         try {
             socket = new DatagramSocket();
             address = InetAddress.getByName("localhost");
+
         } catch (SocketException | UnknownHostException e) {
             e.printStackTrace();
         }
@@ -31,15 +32,6 @@ public final class Client {
 
         while (manager.isProgrammState()) {
             manager.vallidateCommand(scanner.nextLine());
-            DatagramPacket packet = new DatagramPacket(buf, buf.length);
-            try {
-                socket.receive(packet);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            String received = new String(
-                    packet.getData(), 0, packet.getLength());
-            System.out.println(received);
         }
     }
 

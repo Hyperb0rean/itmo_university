@@ -4,6 +4,7 @@ import com.greg.server.exceptions.IllegalArgumentException;
 import com.greg.server.util.ServerCommandManager;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class HelpCommand extends Command{
 
@@ -25,7 +26,9 @@ public class HelpCommand extends Command{
 //                for (Command command: target.values()) {
 //                    System.out.println(command.getName() + " -- " + command.getDescription());
 //                }
-                target.values().stream().map(command -> command.getName() + " -- " + command.getDescription()).forEach(o -> this.getManager().getOutput().write(o.toString()));
+                AtomicReference<String> result = new AtomicReference<>("");
+                target.values().stream().map(command -> command.getName() + " -- " + command.getDescription()).forEach(o -> result.set(result + o+ "\n"));
+                this.getManager().getOutput().write(result.toString());
                 return true;
             }
             else throw new IllegalArgumentException("Эта команда не принимает аргументов");

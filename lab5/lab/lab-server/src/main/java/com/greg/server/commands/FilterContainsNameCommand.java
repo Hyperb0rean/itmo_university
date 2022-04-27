@@ -4,6 +4,8 @@ import com.greg.server.exceptions.IllegalArgumentException;
 import com.greg.server.util.CollectionManager;
 import com.greg.server.util.ServerCommandManager;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 public class FilterContainsNameCommand extends  Command{
     private final CollectionManager target;
 
@@ -25,7 +27,9 @@ public class FilterContainsNameCommand extends  Command{
 //                        System.out.println(o.toString());
 //                    }
 //                }
-                target.getOrganizations().stream().filter(x -> x.getName().contains(argument)).forEach(o -> this.getManager().getOutput().write(o.toString()));
+                AtomicReference<String> result = new AtomicReference<>("");
+                target.getOrganizations().stream().filter(x -> x.getName().contains(argument)).forEach(o-> result.set(result + o.toString() + "\n"));
+                this.getManager().getOutput().write(result.toString());
                 return true;
             }
             else throw new IllegalArgumentException("Нужно ввести подстроку");

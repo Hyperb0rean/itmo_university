@@ -21,9 +21,11 @@ public class HistoryCommand extends Command{
     public boolean execute(String argument) {
         try{
             if(argument.isEmpty()){
+                StringBuilder result = new StringBuilder();
                 for (int i =0; i<Math.min(10,target.size());i++){
-                    System.out.println(target.toArray()[i]);
+                    result.append(target.toArray()[i]).append("\n");
                 }
+                this.getManager().getOutput().write(result.toString());
                 return true;
             }
             else throw new IllegalArgumentException("Эта команда не принимает аргументов");
