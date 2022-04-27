@@ -22,7 +22,7 @@ public class ShowCommand extends Command{
     @Override
     public boolean execute(String argument) {
         try{
-            if(argument.isEmpty()){
+            if(argument == null || argument.isEmpty()){
                 AtomicReference<String> result = new AtomicReference<>("");
                 target.getOrganizations().stream().forEach(o -> result.set(result + o.toString() +"\n"));
                 this.getManager().getOutput().write(result.toString());

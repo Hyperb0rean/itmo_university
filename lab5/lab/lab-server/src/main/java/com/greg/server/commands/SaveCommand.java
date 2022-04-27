@@ -23,7 +23,7 @@ public class SaveCommand extends Command{
     @Override
     public boolean execute(String argument) {
         try{
-            if(argument.isEmpty()){
+            if(argument == null || argument.isEmpty()){
                 File file = new File(System.getenv("LAB5"));
                 //File file = new File("C:\\Users\\jewel\\Documents\\Java\\itmo_university\\lab5\\lab\\lab-client\\src\\main\\java\\com\\greg\\client\\util\\test.json");
 

@@ -20,7 +20,7 @@ public class HistoryCommand extends Command{
     @Override
     public boolean execute(String argument) {
         try{
-            if(argument.isEmpty()){
+            if(argument == null || argument.isEmpty()){
                 StringBuilder result = new StringBuilder();
                 for (int i =0; i<Math.min(10,target.size());i++){
                     result.append(target.toArray()[i]).append("\n");

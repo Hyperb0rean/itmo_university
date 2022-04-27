@@ -26,7 +26,7 @@ public class PrintFieldDescendingCommand extends Command {
 //            LinkedList<Organization> sorted = target.getOrganizations();
 //            Collections.sort(sorted);
 //            Collections.reverse(sorted);
-            if (argument.isEmpty()) {
+            if (argument == null ||  argument.isEmpty()) {
 //                for (Organization o : sorted) {
 //                    System.out.println(o.getEmployeesCount());
 //                }

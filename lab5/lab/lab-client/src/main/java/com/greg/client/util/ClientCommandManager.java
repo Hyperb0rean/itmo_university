@@ -52,17 +52,19 @@ public class ClientCommandManager {
             }
             else throw new EmptyInputException("Не корректный ввод команды, попробуйте еще раз");
 
-            if (!requestManager.isServiceFlag()){
                 if(validation){
                     if(command.equals("exit")){
                         programmState = false;
                     }
+                    else if(command.equals("add") || command.equals("update") || command.equals("remove_lower")){
+
+                        requestManager.sendRequest(requestManager.makeRequest(command, new Asker().askOrganisation()));
+                    }
                     else {
-                        requestManager.sendRequest(command, argument);
+                        requestManager.sendRequest(requestManager.makeRequest(command, argument));
                     }
                 }
                 else throw new CommandNotExistsException("Такой команды не существует, попробуйте еще раз");
-            }
 
         } catch (CommandNotExistsException | EmptyInputException e) {
             System.err.println(e.getMessage());

@@ -30,7 +30,6 @@ public class Response {
         switch (messageType){
             case COMMON:return ("0" + message).getBytes(StandardCharsets.UTF_8);
             case ERROR: return ("1" + message).getBytes(StandardCharsets.UTF_8);
-            case SERVICE: return ("2"+message).getBytes(StandardCharsets.UTF_8);
             default: return message.getBytes(StandardCharsets.UTF_8);
         }
     }

@@ -1,6 +1,8 @@
 package com.greg.server.util;
 
+import com.google.gson.GsonBuilder;
 import com.greg.server.commands.Command;
+import com.greg.server.data.Organization;
 import com.greg.server.util.io.Readable;
 import com.greg.server.util.io.Writable;
 
@@ -12,6 +14,7 @@ public class ServerCommandManager {
     private Readable input;
     private Writable output;
     private boolean programState = true;
+    private Organization tempOrganisation;
 
     public Queue<String> getHistory() {
         return history;
@@ -45,13 +48,21 @@ public class ServerCommandManager {
         this.output = output;
     }
 
+    public Organization getTempOrganisation() {
+        return tempOrganisation;
+    }
 
 
     public boolean executeCommand(String message){
 
         String command;
         command = message.split(" ")[0];
-        String argument = message.substring(command.length()+1);
+        String argument = message.substring(command.length() +1);
+        if(command.equals("add") || command.equals("update") || command.equals("remove_lower")){
+            GsonBuilder builder = new GsonBuilder();
+            this.tempOrganisation = builder.create().fromJson(argument,Organization.class);
+            argument= null;
+        }
         commands.get(command).execute(argument);
         Date date = new Date();
         history.add(date.toString() + ";     " + command);
@@ -62,7 +73,6 @@ public class ServerCommandManager {
         this.history = new PriorityQueue<String>();
         this.commands = new HashMap<String,Command>();
     }
-
 
 
 }

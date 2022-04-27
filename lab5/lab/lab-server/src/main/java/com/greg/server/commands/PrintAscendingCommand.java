@@ -23,7 +23,7 @@ public class PrintAscendingCommand extends Command{
         try{
 //            LinkedList<Organization> sorted = target.getOrganizations();
 //            Collections.sort(sorted);
-            if(argument.isEmpty()){
+            if( argument == null || argument.isEmpty()){
 //                for (Organization o:sorted) {
 //                    System.out.println(o.toString());
 //                }

@@ -1,5 +1,7 @@
 package com.greg.client.util;
 
+import com.greg.client.data.Organization;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -9,18 +11,28 @@ import java.nio.charset.StandardCharsets;
 
 public class RequestManager {
 
-    private boolean serviceFlag = false;
 
-    private Request makeRequest(String command,String argument){
+
+    public Request makeRequest(String command,String argument){
         Request request = new Request();
         request.setCommand(command);
         request.setArgument(argument);
+        request.setData(null);
         return request;
     }
-    public boolean sendRequest(String command, String argument)  {
-        Request request = makeRequest(command,argument);
-        String message = request.getCommand() + " " + request.getArgument();
-        ByteBuffer buffer = ByteBuffer.wrap(message.getBytes(StandardCharsets.UTF_8));
+
+    public Request makeRequest(String command, Organization organization){
+        Request request = new Request();
+        request.setCommand(command);
+        request.setArgument("");
+        request.setData(organization);
+        return request;
+    }
+
+
+    public boolean sendRequest(Request request)  {
+
+        ByteBuffer buffer = ByteBuffer.wrap(request.getBytes());
         SocketAddress serverAdress = new InetSocketAddress("localhost",1337);
         try {
             DatagramChannel client = DatagramChannel.open().bind(null);
@@ -38,9 +50,7 @@ public class RequestManager {
             }else if (msg.toCharArray()[0] == '1'){
                 System.err.println(msg.substring(1));
             }
-            else if (msg.toCharArray()[0] == '2'){
-                serviceFlag = !serviceFlag;
-            }
+
 
 
         } catch (IOException e) {
@@ -51,7 +61,4 @@ public class RequestManager {
         return true;
     }
 
-    public boolean isServiceFlag() {
-        return serviceFlag;
-    }
 }

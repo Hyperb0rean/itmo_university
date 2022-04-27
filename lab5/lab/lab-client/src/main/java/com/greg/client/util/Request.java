@@ -1,18 +1,16 @@
 package com.greg.client.util;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.greg.client.data.Organization;
+
+import java.nio.charset.StandardCharsets;
+
 public class Request {
-    private int size;
     private String command;
     private String argument;
-    private Object data;
+    private Organization data;
 
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
 
     public String getCommand() {
         return command;
@@ -26,7 +24,7 @@ public class Request {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(Organization data) {
         this.data = data;
     }
 
@@ -36,5 +34,17 @@ public class Request {
 
     public void setArgument(String argument) {
         this.argument = argument;
+    }
+
+    public byte[] getBytes(){
+        StringBuilder result = new StringBuilder();
+        result.append(command).append(argument).append(" ");
+        if(data != null){
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.create();
+            result.append(gson.toJson(data));
+        }
+
+        return result.toString().getBytes(StandardCharsets.UTF_8);
     }
 }

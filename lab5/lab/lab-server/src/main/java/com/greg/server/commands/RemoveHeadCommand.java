@@ -19,7 +19,7 @@ public class RemoveHeadCommand extends Command{
     @Override
     public boolean execute(String argument) {
         try{
-            if(argument.isEmpty()){
+            if(argument == null || argument.isEmpty()){
                 this.getManager().getOutput().write(target.getOrganizations().getFirst().toString());
                 target.getOrganizations().removeFirst();
                 this.getManager().getOutput().write("Элемент успешно удален!");

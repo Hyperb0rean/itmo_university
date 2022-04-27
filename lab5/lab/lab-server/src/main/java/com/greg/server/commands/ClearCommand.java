@@ -19,7 +19,7 @@ public class ClearCommand extends Command{
     @Override
     public boolean execute(String argument) {
         try{
-            if(argument.isEmpty()){
+            if(argument == null || argument.isEmpty()){
                 target.getOrganizations().clear();
                 this.getManager().getOutput().write("Коллекция успешно очищена!");
                 return true;

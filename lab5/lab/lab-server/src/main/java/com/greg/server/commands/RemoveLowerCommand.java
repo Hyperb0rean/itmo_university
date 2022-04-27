@@ -23,7 +23,7 @@ public class RemoveLowerCommand extends Command{
     @Override
     public boolean execute(String argument) {
         try{
-            if(argument.isEmpty()){
+            if(argument == null || argument.isEmpty()){
                 Organization result = this.getManager().getInput().readOrganisation();
                 result.generateId();
                 target.getOrganizations().removeIf(o -> o.compareTo(result) < 0);

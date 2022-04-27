@@ -48,17 +48,4 @@ public class ResponseOutput implements Writable{
         return true;
     }
 
-    @Override
-    public boolean service(String output) {
-        Response response = new Response(output,MessageType.SERVICE);
-        ByteBuffer buffer = ByteBuffer.wrap(response.getBytes());
-        try {
-            DatagramChannel server = DatagramChannel.open().bind(null);
-            server.send(buffer,manager.getInput().getCurrentClient());
-
-        } catch (IOException e) {
-            System.out.println("Не удалось отослать сообщение на клиент. Подробнее: \n" + e.getMessage());
-        }
-        return true;
-    }
 }

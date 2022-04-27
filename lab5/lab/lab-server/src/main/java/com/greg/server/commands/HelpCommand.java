@@ -22,7 +22,7 @@ public class HelpCommand extends Command{
     @Override
     public boolean execute(String argument) {
         try{
-            if(argument.isEmpty()){
+            if(argument == null || argument.isEmpty()){
 //                for (Command command: target.values()) {
 //                    System.out.println(command.getName() + " -- " + command.getDescription());
 //                }

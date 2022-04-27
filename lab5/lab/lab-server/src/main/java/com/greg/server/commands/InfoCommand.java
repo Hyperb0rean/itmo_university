@@ -20,7 +20,7 @@ public class InfoCommand extends Command {
     @Override
     public boolean execute(String argument) {
         try{
-            if(argument.isEmpty()){
+            if(argument == null || argument.isEmpty()){
                 String[] temp = target.getOrganizations().getClass().toString().split("\\.");
                 this.getManager().getOutput().write("Collection Type: " + temp[temp.length -1] + "\n"+
                         "Number of elements:  " + target.getOrganizations().size() + "\n" +
