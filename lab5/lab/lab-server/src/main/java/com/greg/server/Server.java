@@ -23,7 +23,7 @@ public final class Server {
         ServerCommandManager manager = new ServerCommandManager();
         InetAddress host = InetAddress.getLocalHost();
         int port = 1337;
-        manager.setInput(new RequestInput(port));
+        manager.setInput(new RequestInput(port,manager));
         manager.setOutput(new ResponseOutput(manager));
 
         CollectionManager collection = new CollectionManager();

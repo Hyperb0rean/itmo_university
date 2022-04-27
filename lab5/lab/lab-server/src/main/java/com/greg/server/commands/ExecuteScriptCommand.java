@@ -31,7 +31,7 @@ public class ExecuteScriptCommand extends Command{
                     this.getManager().executeCommand(line);
                 }
                 fr.close();
-                this.getManager().setInput(new RequestInput(1337));
+                this.getManager().setInput(new RequestInput(1337,getManager()));
                 return true;
             }
             else throw new IllegalArgumentException("Необходимо передать файл в качестве аргумента команды");

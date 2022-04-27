@@ -2,11 +2,12 @@ package com.greg.server.util.io;
 
 import com.greg.server.util.ServerCommandManager;
 
+
 import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.nio.charset.StandardCharsets;
+
 
 public class ResponseOutput implements Writable{
 
@@ -21,7 +22,8 @@ public class ResponseOutput implements Writable{
 
     @Override
     public boolean write(String output) {
-        ByteBuffer buffer = ByteBuffer.wrap(output.getBytes(StandardCharsets.UTF_8));
+        Response response = new Response(output,MessageType.COMMON);
+        ByteBuffer buffer = ByteBuffer.wrap(response.getBytes());
         try {
             DatagramChannel server = DatagramChannel.open().bind(null);
             server.send(buffer,manager.getInput().getCurrentClient());
@@ -34,7 +36,22 @@ public class ResponseOutput implements Writable{
 
     @Override
     public boolean error(String errMessage) {
-        ByteBuffer buffer = ByteBuffer.wrap(errMessage.getBytes(StandardCharsets.UTF_8));
+        Response response = new Response(errMessage,MessageType.ERROR);
+        ByteBuffer buffer = ByteBuffer.wrap(response.getBytes());
+        try {
+            DatagramChannel server = DatagramChannel.open().bind(null);
+            server.send(buffer,manager.getInput().getCurrentClient());
+
+        } catch (IOException e) {
+            System.out.println("Не удалось отослать сообщение на клиент. Подробнее: \n" + e.getMessage());
+        }
+        return true;
+    }
+
+    @Override
+    public boolean service(String output) {
+        Response response = new Response(output,MessageType.SERVICE);
+        ByteBuffer buffer = ByteBuffer.wrap(response.getBytes());
         try {
             DatagramChannel server = DatagramChannel.open().bind(null);
             server.send(buffer,manager.getInput().getCurrentClient());

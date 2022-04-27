@@ -9,6 +9,8 @@ import java.nio.charset.StandardCharsets;
 
 public class RequestManager {
 
+    private boolean serviceFlag = false;
+
     private Request makeRequest(String command,String argument){
         Request request = new Request();
         request.setCommand(command);
@@ -31,7 +33,15 @@ public class RequestManager {
             byte[] bytes = new byte[buffer.remaining()];
             buffer.get(bytes);
             String msg = new String(bytes);
-            System.out.println(msg);
+            if(msg.toCharArray()[0] == '0'){
+                System.out.println(msg.substring(1));
+            }else if (msg.toCharArray()[0] == '1'){
+                System.err.println(msg.substring(1));
+            }
+            else if (msg.toCharArray()[0] == '2'){
+                serviceFlag = !serviceFlag;
+            }
+
 
         } catch (IOException e) {
             System.out.println("Не удалось отослать сообщение на сервер. Подробнее: \n" + e.getMessage());
@@ -39,5 +49,9 @@ public class RequestManager {
 
 
         return true;
+    }
+
+    public boolean isServiceFlag() {
+        return serviceFlag;
     }
 }

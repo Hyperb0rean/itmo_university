@@ -31,8 +31,7 @@ public class UserInput implements Readable{
 
     public  Float askAnnualTurnover(){
         System.out.println("Введите оборот организации:");
-        Float result = scanner.nextFloat();
-        return result;
+        return scanner.nextFloat();
     }
 
     public   OrganizationType askOrgType(){

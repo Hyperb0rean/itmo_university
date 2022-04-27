@@ -7,8 +7,9 @@ import java.util.HashSet;
 
 public class ClientCommandManager {
     private boolean programmState = true;
-    private HashSet<String> availibleCommands;
-    private RequestManager requestManager;
+    private final HashSet<String> availibleCommands;
+    private final RequestManager requestManager;
+
 
     public ClientCommandManager() {
         this.availibleCommands = new HashSet<String>();
@@ -34,11 +35,7 @@ public class ClientCommandManager {
         return programmState;
     }
 
-    public void setProgrammState(boolean programmState) {
-        this.programmState = programmState;
-    }
-    
-    public boolean vallidateCommand(String message){
+    public void vallidateCommand(String message){
         try {
             boolean validation;
             String command;
@@ -55,20 +52,20 @@ public class ClientCommandManager {
             }
             else throw new EmptyInputException("Не корректный ввод команды, попробуйте еще раз");
 
-            if(validation){
-                if(command.equals("exit")){
-                    programmState = false;
-                    return true;
+            if (!requestManager.isServiceFlag()){
+                if(validation){
+                    if(command.equals("exit")){
+                        programmState = false;
+                    }
+                    else {
+                        requestManager.sendRequest(command, argument);
+                    }
                 }
-                else {
-                    return  requestManager.sendRequest(command,argument);
-                }
+                else throw new CommandNotExistsException("Такой команды не существует, попробуйте еще раз");
             }
-            else throw new CommandNotExistsException("Такой команды не существует, попробуйте еще раз");
 
         } catch (CommandNotExistsException | EmptyInputException e) {
             System.err.println(e.getMessage());
-            return false;
         }
     }
 

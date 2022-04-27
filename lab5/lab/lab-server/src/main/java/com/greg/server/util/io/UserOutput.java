@@ -15,4 +15,9 @@ public class UserOutput implements Writable{
         System.err.println(errMessage);
         return true;
     }
+
+    @Override
+    public boolean service(String message) {
+        return false;
+    }
 }
