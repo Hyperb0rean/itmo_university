@@ -58,10 +58,17 @@ public class ServerCommandManager {
         String command;
         command = message.split(" ")[0];
         String argument = message.substring(command.length() +1);
-        if(command.equals("add") || command.equals("update") || command.equals("remove_lower")){
+        if(command.equals("add")  || command.equals("remove_lower")){
             GsonBuilder builder = new GsonBuilder();
             this.tempOrganisation = builder.create().fromJson(argument,Organization.class);
             argument= null;
+        }
+        else if(command.equals("update")){
+            argument= message.split(" ")[1];
+            String org = message.substring(argument.length() +command.length()+1);
+            GsonBuilder builder = new GsonBuilder();
+            this.tempOrganisation = builder.create().fromJson(org,Organization.class);
+
         }
         commands.get(command).execute(argument);
         Date date = new Date();

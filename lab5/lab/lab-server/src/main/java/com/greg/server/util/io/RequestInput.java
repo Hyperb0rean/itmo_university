@@ -49,11 +49,15 @@ public class RequestInput implements Readable{
         } catch (IOException e) {
             System.err.println("Произошла ошибка при попытке чтения данных. Подробнее\n" + e.getMessage());
         }
-        buffer.flip();
-        byte[] bytes = new byte[buffer.remaining()];
-        buffer.get(bytes);
-        String msg = new String(bytes);
-
+//        buffer.flip();
+//        byte[] bytes = new byte[buffer.remaining()];
+//        buffer.get(bytes);
+//        String msg = new String(bytes);
+        byte[] buf = new byte[buffer.position()];
+        for(int i =0; i< buf.length;i++){
+            buf[i] = buffer.get(i);
+        }
+        String msg = new String(buf);
         return msg;
     }
 

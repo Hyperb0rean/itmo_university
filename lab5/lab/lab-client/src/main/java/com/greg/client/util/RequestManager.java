@@ -28,6 +28,14 @@ public class RequestManager {
         request.setData(organization);
         return request;
     }
+    public Request makeRequest(String command,String argument, Organization organization){
+        Request request = new Request();
+        request.setArgument(" "+argument);
+        request.setCommand(command);
+        request.setData(organization);
+        return request;
+    }
+
 
 
     public boolean sendRequest(Request request)  {
@@ -38,20 +46,28 @@ public class RequestManager {
             DatagramChannel client = DatagramChannel.open().bind(null);
             client.send(buffer,serverAdress);
 
-            buffer = ByteBuffer.allocate(4096);
+            buffer = ByteBuffer.allocate(256);
             buffer.clear();
             serverAdress = client.receive(buffer);
             buffer.flip();
             byte[] bytes = new byte[buffer.remaining()];
             buffer.get(bytes);
-            String msg = new String(bytes);
-            if(msg.toCharArray()[0] == '0'){
+            int len = Integer.parseInt(new String(bytes));
+            buffer.clear();
+            StringBuilder msg = new StringBuilder("");
+            for(int offset=0; offset<len; offset+=128) {
+                serverAdress = client.receive(buffer);
+                buffer.flip();
+                byte[] temp = new byte[buffer.remaining()];
+                buffer.get(temp);
+                msg.append(new String(temp));
+                buffer.clear();
+            }
+            if(msg.toString().toCharArray()[0] == '0'){
                 System.out.println(msg.substring(1));
-            }else if (msg.toCharArray()[0] == '1'){
+            }else if (msg.toString().toCharArray()[0] == '1'){
                 System.err.println(msg.substring(1));
             }
-
-
 
         } catch (IOException e) {
             System.out.println("Не удалось отослать сообщение на сервер. Подробнее: \n" + e.getMessage());

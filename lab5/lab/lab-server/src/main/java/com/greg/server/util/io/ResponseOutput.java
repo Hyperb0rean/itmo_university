@@ -7,14 +7,15 @@ import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import java.nio.charset.StandardCharsets;
 
 
 public class ResponseOutput implements Writable{
 
 
     private DatagramSocket socket;
-    private byte[] buf = new byte[4096];
-    private ServerCommandManager manager;
+    private final byte[] buf = new byte[4096];
+    private final ServerCommandManager manager;
 
     public ResponseOutput(ServerCommandManager manager) {
         this.manager = manager;
@@ -23,10 +24,21 @@ public class ResponseOutput implements Writable{
     @Override
     public boolean write(String output) {
         Response response = new Response(output,MessageType.COMMON);
-        ByteBuffer buffer = ByteBuffer.wrap(response.getBytes());
+        String message =  response.getMessageType().ordinal()+ response.getMessage();
+        Integer len = message.length();
+        ByteBuffer buffer = ByteBuffer.wrap(len.toString().getBytes(StandardCharsets.UTF_8));
+
         try {
             DatagramChannel server = DatagramChannel.open().bind(null);
             server.send(buffer,manager.getInput().getCurrentClient());
+            for(int offset=0; offset<message.length(); offset+=128) {
+                String chunk;
+                chunk=message.substring(offset,Math.min(offset+128,message.length()));
+                buffer = ByteBuffer.wrap(chunk.getBytes(StandardCharsets.UTF_8));
+                server.send(buffer,manager.getInput().getCurrentClient());
+                buffer.clear();
+            }
+
 
         } catch (IOException e) {
             System.out.println("Не удалось отослать сообщение на клиент. Подробнее: \n" + e.getMessage());

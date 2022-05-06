@@ -23,7 +23,7 @@ public class UpdateCommand extends Command {
     @Override
     public boolean execute(String argument) {
         try {
-            if (!argument.isEmpty()) {
+            if (argument != null || !argument.isEmpty()) {
                 Organization result = this.getManager().getInput().readOrganisation();
                 result.setId(Integer.parseInt(argument));
                 boolean idFoundFlag = false;

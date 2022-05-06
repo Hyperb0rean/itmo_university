@@ -62,6 +62,14 @@
 			<artifactId>gson</artifactId>
 			<version>2.9.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.jtransc</groupId>
+			<artifactId>jtransc-rt</artifactId>
+			<version>0.0.4</version>
+		</dependency>
+
+
 	</dependencies>
 
 </project>

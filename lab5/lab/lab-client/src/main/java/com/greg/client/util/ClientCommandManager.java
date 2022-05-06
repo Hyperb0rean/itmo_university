@@ -56,9 +56,13 @@ public class ClientCommandManager {
                     if(command.equals("exit")){
                         programmState = false;
                     }
-                    else if(command.equals("add") || command.equals("update") || command.equals("remove_lower")){
+                    else if(command.equals("add")   || command.equals("remove_lower")){
 
                         requestManager.sendRequest(requestManager.makeRequest(command, new Asker().askOrganisation()));
+                    }
+                    else if(command.equals("update")){
+                        requestManager.sendRequest(requestManager.makeRequest(command,argument, new Asker().askOrganisation()));
+
                     }
                     else {
                         requestManager.sendRequest(requestManager.makeRequest(command, argument));
