@@ -15,10 +15,9 @@ public final class Server {
         throw new UnsupportedOperationException("This is an utility class and can not be instantiated");
     }
 
-    public static void main(String[] args) throws UnknownHostException {
+    public static void main(String[] args)  {
         Scanner scanner = new Scanner(System.in);
         ServerCommandManager manager = new ServerCommandManager();
-        InetAddress host = InetAddress.getLocalHost();
         int port = 1337;
         manager.setInput(new RequestInput(port,manager));
         manager.setOutput(new ResponseOutput(manager));
@@ -57,7 +56,7 @@ public final class Server {
         new Thread(() -> {
             while (manager.isProgramState()){
                 String line = scanner.nextLine();
-                if(line.equals("exit") || line.equals("save")){
+                if(line.equals("exit")){
                     manager.executeCommand(line+" ");
                 }
             }

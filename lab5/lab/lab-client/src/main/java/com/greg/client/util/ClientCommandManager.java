@@ -2,6 +2,7 @@ package com.greg.client.util;
 
 import com.greg.common.commands.exceptions.CommandNotExistsException;
 import com.greg.common.commands.exceptions.EmptyInputException;
+import com.greg.common.util.data.User;
 
 import java.util.HashSet;
 
@@ -10,6 +11,7 @@ public class ClientCommandManager {
     private final HashSet<String> availibleCommands;
     private final RequestManager requestManager;
     private  boolean isAuthorized =false;
+    private String currentUser;
 
     public RequestManager getRequestManager() {
         return requestManager;
@@ -64,19 +66,21 @@ public class ClientCommandManager {
                     }
                     else if(command.equals("add")   || command.equals("remove_lower")){
 
-                        requestManager.sendRequest(requestManager.makeRequest(command, new Asker().askOrganisation()));
+                        requestManager.sendRequest(requestManager.makeRequest(currentUser,command, new Asker().askOrganisation()));
                     }
                     else if(command.equals("update")){
-                        requestManager.sendRequest(requestManager.makeRequest(command,argument, new Asker().askOrganisation()));
+                        requestManager.sendRequest(requestManager.makeRequest(currentUser,command,argument, new Asker().askOrganisation()));
 
                     }
                     else {
-                        requestManager.sendRequest(requestManager.makeRequest(command, argument));
+                        requestManager.sendRequest(requestManager.makeRequest(currentUser,command, argument));
                     }
                 }
                 else if(validation){
                     if(command.equals("register") || command.equals("login")){
-                        requestManager.sendRequest(requestManager.makeRequest(command,new Asker().askUser()));
+                        User user = new Asker().askUser();
+                        requestManager.sendRequest(requestManager.makeRequest(user.getName(),command,user));
+                        currentUser = user.getName();
                         isAuthorized = requestManager.isResponseCode();
                     }
                     else throw new IllegalArgumentException("Требуется авторизироваться перед началом работы");

@@ -10,7 +10,16 @@ public class Request {
     private String command;
     private String argument;
     private Object data;
+    private String user;
 
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
 
     public String getCommand() {
         return command;
@@ -38,7 +47,7 @@ public class Request {
 
     public byte[] getBytes(){
         StringBuilder result = new StringBuilder();
-        result.append(command).append(argument).append(" ");
+        result.append(user).append(" ").append(command).append(argument).append(" ");
         if(data != null){
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();

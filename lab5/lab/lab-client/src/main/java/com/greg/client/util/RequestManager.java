@@ -12,23 +12,27 @@ public class RequestManager {
 
     private boolean responseCode = false;
 
-    public Request makeRequest(String command,String argument){
+    public Request makeRequest(String user,String command,String argument){
         Request request = new Request();
+        request.setUser(user);
         request.setCommand(command);
         request.setArgument(argument);
         request.setData(null);
         return request;
     }
 
-    public Request makeRequest(String command, Object data){
+    public Request makeRequest(String user,String command, Object data){
         Request request = new Request();
+        request.setUser(user);
         request.setCommand(command);
         request.setArgument("");
         request.setData(data);
         return request;
     }
-    public Request makeRequest(String command,String argument, Object data){
+    public Request makeRequest(String user, String command,String argument, Object data){
+
         Request request = new Request();
+        request.setUser(user);
         request.setArgument(argument);
         request.setCommand(command);
         request.setData(data);

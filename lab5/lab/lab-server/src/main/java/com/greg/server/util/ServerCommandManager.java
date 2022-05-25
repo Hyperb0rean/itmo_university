@@ -58,9 +58,10 @@ public class ServerCommandManager {
 
     public  boolean executeCommand(String message){
 
-        String command;
-        command = message.split(" ")[0];
-        String argument = message.substring(command.length()+1);
+
+        String username = message.split(" ")[0];
+        String command = message.substring(username.length()+1).split(" ")[0];
+        String argument = message.substring(username.length()+command.length()+2);
         if(command.equals("add")  || command.equals("remove_lower")){
             GsonBuilder builder = new GsonBuilder();
             this.tempOrganisation = builder.create().fromJson(argument,Organization.class);
@@ -78,6 +79,7 @@ public class ServerCommandManager {
             this.currentUser = builder.create().fromJson(argument,User.class);
             argument=null;
         }
+        currentUser.setName(username);
         commands.get(command).execute(argument);
         Date date = new Date();
         history.add(date.toString() + ";     " + command);
