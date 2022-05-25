@@ -2,6 +2,7 @@ package com.greg.client;
 
 
 import com.greg.client.util.ClientCommandManager;
+import com.greg.common.util.data.User;
 
 import java.io.IOException;
 import java.net.*;
@@ -20,15 +21,6 @@ public final class Client {
 
         Scanner scanner = new Scanner(System.in);
         ClientCommandManager manager = new ClientCommandManager();
-        byte[] buf = new byte[4096];
-        try {
-            socket = new DatagramSocket();
-            address = InetAddress.getByName("localhost");
-
-        } catch (SocketException | UnknownHostException e) {
-            e.printStackTrace();
-        }
-
 
         while (manager.isProgrammState()) {
             manager.vallidateCommand(scanner.nextLine());

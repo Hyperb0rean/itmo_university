@@ -1,11 +1,14 @@
 package com.greg.server.commands;
 
-import com.greg.server.data.Organization;
-import com.greg.server.exceptions.IllegalArgumentException;
-import com.greg.server.exceptions.NoSuchElementException;
+import com.greg.common.util.data.Organization;
+import com.greg.common.commands.exceptions.IllegalArgumentException;
+import com.greg.common.commands.exceptions.NoSuchElementException;
 import com.greg.server.util.CollectionManager;
+import com.greg.server.util.DatabaseManager;
+import com.greg.server.util.FileManager;
 import com.greg.server.util.ServerCommandManager;
 
+import java.sql.SQLException;
 import java.util.Iterator;
 
 public class RemoveByIdCommand extends Command{
@@ -25,13 +28,18 @@ public class RemoveByIdCommand extends Command{
     public boolean execute(String argument) {
         try{
             if(!argument.isEmpty()){
-                String id = argument.split(" ")[0];
+                int id = Integer.parseInt(argument.split(" ")[0]);
                 boolean idFoundFlag = false;
                 Iterator<Organization> iterator = target.getOrganizations().iterator();
                 while (iterator.hasNext()) {
                     Organization s = iterator.next(); // must be called before you can call iterator.remove()
-                    if(s.getId() == Integer.parseInt(id))
+                    if(s.getId() == id)
                     {
+                        if(target.getClass().equals(DatabaseManager.class))
+                        {
+                            DatabaseManager databaseManager = (DatabaseManager) target;
+                            databaseManager.remove(id, getManager().getCurrentUser());
+                        }
                         iterator.remove();
                         idFoundFlag=true;
                     }
@@ -41,7 +49,7 @@ public class RemoveByIdCommand extends Command{
                 return true;
             }
             else throw new IllegalArgumentException("Невозможно применить команду без аргументов");
-        } catch (IllegalArgumentException  | NumberFormatException | NoSuchElementException e) {
+        } catch (IllegalArgumentException | NumberFormatException | NoSuchElementException | SQLException e) {
             this.getManager().getOutput().error(e.getMessage());
             return false;
         }

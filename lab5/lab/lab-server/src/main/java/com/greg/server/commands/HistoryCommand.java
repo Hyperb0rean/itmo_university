@@ -1,6 +1,6 @@
 package com.greg.server.commands;
 
-import com.greg.server.exceptions.IllegalArgumentException;
+import com.greg.common.commands.exceptions.IllegalArgumentException;
 import com.greg.server.util.ServerCommandManager;
 
 import java.util.Queue;
@@ -22,9 +22,7 @@ public class HistoryCommand extends Command{
         try{
             if(argument == null || argument.isEmpty()){
                 StringBuilder result = new StringBuilder();
-                for (int i =0; i<Math.min(10,target.size());i++){
-                    result.append(target.toArray()[i]).append("\n");
-                }
+                 target.stream().forEach(s -> result.append(s).append("\n"));
                 this.getManager().getOutput().write(result.toString());
                 return true;
             }

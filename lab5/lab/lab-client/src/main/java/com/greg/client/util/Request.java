@@ -2,14 +2,14 @@ package com.greg.client.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.greg.client.data.Organization;
+import com.greg.common.util.data.Organization;
 
 import java.nio.charset.StandardCharsets;
 
 public class Request {
     private String command;
     private String argument;
-    private Organization data;
+    private Object data;
 
 
     public String getCommand() {
@@ -24,7 +24,7 @@ public class Request {
         return data;
     }
 
-    public void setData(Organization data) {
+    public void setData(Object data) {
         this.data = data;
     }
 

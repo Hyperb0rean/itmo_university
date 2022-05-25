@@ -1,15 +1,14 @@
 package com.greg.server.commands;
 
-import com.greg.server.exceptions.IllegalArgumentException;
+import com.greg.common.commands.exceptions.IllegalArgumentException;
 import com.greg.server.util.CollectionManager;
+import com.greg.server.util.FileManager;
 import com.greg.server.util.ServerCommandManager;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 public class PrintAscendingCommand extends Command{
     private final CollectionManager target;
 
-    public PrintAscendingCommand(ServerCommandManager manager,CollectionManager target) {
+    public PrintAscendingCommand(ServerCommandManager manager, CollectionManager target) {
         super("print_ascending", "Вывести элементы коллекции в порядке возрастания",manager);
         this.target = target;
     }
@@ -21,14 +20,10 @@ public class PrintAscendingCommand extends Command{
     @Override
     public boolean execute(String argument) {
         try{
-//            LinkedList<Organization> sorted = target.getOrganizations();
-//            Collections.sort(sorted);
+
             if( argument == null || argument.isEmpty()){
-//                for (Organization o:sorted) {
-//                    System.out.println(o.toString());
-//                }
-                AtomicReference<String> result = new AtomicReference<>("");
-                target.getOrganizations().stream().sorted().forEach(o-> result.set(result + o.toString() + "\n"));
+                StringBuilder result = new StringBuilder();
+                target.getOrganizations().stream().sorted().forEach(o-> result.append(o).append("\n"));
                 this.getManager().getOutput().write(result.toString());
                 return true;
             }

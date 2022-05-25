@@ -1,4 +1,4 @@
-package com.greg.client.data;
+package com.greg.common.util.data;
 
 public enum OrganizationType {
     GOVERNMENT,

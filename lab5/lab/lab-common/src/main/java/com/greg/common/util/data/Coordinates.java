@@ -1,6 +1,6 @@
-package com.greg.server.data;
+package com.greg.common.util.data;
 
-import com.greg.server.exceptions.LimitExceededException;
+import com.greg.common.commands.exceptions.LimitExceededException;
 
 public class Coordinates {
     private Integer x; //Значение поля должно быть больше -98, Поле не может быть null

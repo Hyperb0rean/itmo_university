@@ -1,12 +1,12 @@
 package com.greg.server.commands;
 
-import com.greg.server.data.Organization;
-import com.greg.server.exceptions.IllegalArgumentException;
+import com.greg.common.util.data.Organization;
+import com.greg.common.commands.exceptions.IllegalArgumentException;
 import com.greg.server.util.CollectionManager;
+import com.greg.server.util.FileManager;
 import com.greg.server.util.ServerCommandManager;
 
 import java.util.Collections;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class PrintFieldDescendingCommand extends Command {
     private final CollectionManager target;
@@ -23,16 +23,11 @@ public class PrintFieldDescendingCommand extends Command {
     @Override
     public boolean execute(String argument) {
         try {
-//            LinkedList<Organization> sorted = target.getOrganizations();
-//            Collections.sort(sorted);
-//            Collections.reverse(sorted);
+
             if (argument == null ||  argument.isEmpty()) {
-//                for (Organization o : sorted) {
-//                    System.out.println(o.getEmployeesCount());
-//                }
-                AtomicReference<String> result = new AtomicReference<>("");
-                target.getOrganizations().stream().map(Organization::getEmployeesCount).sorted(Collections.reverseOrder()).forEach(o-> result.set(result + o.toString() + "\n"));
-                this.getManager().getOutput().write(result.get());
+                StringBuilder result = new StringBuilder();
+                target.getOrganizations().stream().map(Organization::getEmployeesCount).sorted(Collections.reverseOrder()).forEach(o-> result.append(o).append("\n"));
+                this.getManager().getOutput().write(result.toString());
                 return true;
             } else throw new IllegalArgumentException("Эта команда не принимает аргументов");
         } catch (IllegalArgumentException e) {

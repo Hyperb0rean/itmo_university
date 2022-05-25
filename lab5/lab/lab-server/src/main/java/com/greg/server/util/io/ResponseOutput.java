@@ -24,6 +24,10 @@ public class ResponseOutput implements Writable{
     @Override
     public boolean write(String output) {
         Response response = new Response(output,MessageType.COMMON);
+        return send(response);
+    }
+
+    private boolean send(Response response) {
         String message =  response.getMessageType().ordinal()+ response.getMessage();
         Integer len = message.length();
         ByteBuffer buffer = ByteBuffer.wrap(len.toString().getBytes(StandardCharsets.UTF_8));
@@ -38,8 +42,6 @@ public class ResponseOutput implements Writable{
                 server.send(buffer,manager.getInput().getCurrentClient());
                 buffer.clear();
             }
-
-
         } catch (IOException e) {
             System.out.println("Не удалось отослать сообщение на клиент. Подробнее: \n" + e.getMessage());
         }
@@ -49,15 +51,7 @@ public class ResponseOutput implements Writable{
     @Override
     public boolean error(String errMessage) {
         Response response = new Response(errMessage,MessageType.ERROR);
-        ByteBuffer buffer = ByteBuffer.wrap(response.getBytes());
-        try {
-            DatagramChannel server = DatagramChannel.open().bind(null);
-            server.send(buffer,manager.getInput().getCurrentClient());
-
-        } catch (IOException e) {
-            System.out.println("Не удалось отослать сообщение на клиент. Подробнее: \n" + e.getMessage());
-        }
-        return true;
+        return send(response);
     }
 
 }

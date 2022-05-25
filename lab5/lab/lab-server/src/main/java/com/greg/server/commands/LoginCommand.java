@@ -1,18 +1,17 @@
 package com.greg.server.commands;
 
 import com.greg.common.commands.exceptions.IllegalArgumentException;
+import com.greg.common.util.data.Organization;
+import com.greg.common.util.data.User;
 import com.greg.server.util.CollectionManager;
 import com.greg.server.util.DatabaseManager;
-import com.greg.server.util.FileManager;
 import com.greg.server.util.ServerCommandManager;
 
-import java.sql.SQLException;
+public class LoginCommand extends Command{
 
-public class ClearCommand extends Command{
-    private final CollectionManager target;
-
-    public ClearCommand(ServerCommandManager manager, CollectionManager target) {
-        super("clear", "Очистить коллекцию",manager);
+    CollectionManager target;
+    public LoginCommand(ServerCommandManager manager, CollectionManager target) {
+        super("login", "Войти в приложение с существующего аккаунта", manager);
         this.target = target;
     }
 
@@ -24,18 +23,22 @@ public class ClearCommand extends Command{
     public boolean execute(String argument) {
         try{
             if(argument == null || argument.isEmpty()){
+                User user = this.getManager().getInput().readUser();
+
 
                 if(target.getClass().equals(DatabaseManager.class))
                 {
                     DatabaseManager databaseManager = (DatabaseManager) target;
-                    databaseManager.clear();
+                    databaseManager.findUser(user);
                 }
-                target.getOrganizations().clear();
-                this.getManager().getOutput().write("Коллекция успешно очищена!");
+
+
+                this.getManager().getOutput().write("Вход выполнен успешно, здравствуйте," + user.getName());
                 return true;
+
             }
-            else throw new IllegalArgumentException("Эта команда не принимает аргументов");
-        } catch (IllegalArgumentException | SQLException e) {
+            else throw new IllegalArgumentException("Невозможно применить команду без аргументов");
+        } catch (Exception  e) {
             this.getManager().getOutput().error(e.getMessage());
             return false;
         }

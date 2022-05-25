@@ -1,10 +1,9 @@
 package com.greg.server.commands;
 
-import com.greg.server.exceptions.IllegalArgumentException;
+import com.greg.common.commands.exceptions.IllegalArgumentException;
 import com.greg.server.util.ServerCommandManager;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class HelpCommand extends Command{
 
@@ -26,8 +25,8 @@ public class HelpCommand extends Command{
 //                for (Command command: target.values()) {
 //                    System.out.println(command.getName() + " -- " + command.getDescription());
 //                }
-                AtomicReference<String> result = new AtomicReference<>("");
-                target.values().stream().map(command -> command.getName() + " -- " + command.getDescription()).forEach(o -> result.set(result + o+ "\n"));
+                StringBuilder result = new StringBuilder();
+                target.values().stream().map(command -> command.getName() + " -- " + command.getDescription()).forEach(o -> result.append(o).append("\n"));
                 this.getManager().getOutput().write(result.toString());
                 return true;
             }

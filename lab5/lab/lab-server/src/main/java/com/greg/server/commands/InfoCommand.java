@@ -1,14 +1,15 @@
 package com.greg.server.commands;
 
-import com.greg.server.exceptions.IllegalArgumentException;
+import com.greg.common.commands.exceptions.IllegalArgumentException;
 import com.greg.server.util.CollectionManager;
+import com.greg.server.util.FileManager;
 import com.greg.server.util.ServerCommandManager;
 
 public class InfoCommand extends Command {
 
     private final CollectionManager target;
 
-    public InfoCommand(ServerCommandManager manager,CollectionManager target) {
+    public InfoCommand(ServerCommandManager manager, CollectionManager target) {
         super("info", "Вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)", manager);
         this.target = target;
     }

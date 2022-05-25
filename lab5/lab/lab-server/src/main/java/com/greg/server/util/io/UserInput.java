@@ -1,6 +1,6 @@
 package com.greg.server.util.io;
 
-import com.greg.server.data.*;
+import com.greg.common.util.data.*;
 
 import java.net.SocketAddress;
 import java.util.Scanner;
@@ -57,7 +57,7 @@ public class UserInput implements Readable{
         address.setStreet(scanner.nextLine());
         Location location = new Location();
         System.out.println("Введите координату x адреса:");
-        location.setX(scanner.nextLong());
+        location.setX(scanner.nextInt());
         scanner.nextLine();
         System.out.println("Введите координату y адреса:");
         location.setY(scanner.nextInt());
@@ -92,6 +92,11 @@ public class UserInput implements Readable{
 
     @Override
     public SocketAddress getCurrentClient() {
+        return null;
+    }
+
+    @Override
+    public User readUser() {
         return null;
     }
 

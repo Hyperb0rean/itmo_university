@@ -1,7 +1,5 @@
 package com.greg.server.commands;
 
-import com.greg.server.Server;
-import com.greg.server.data.*;
 import com.greg.server.util.ServerCommandManager;
 
 public abstract class Command implements Executable {

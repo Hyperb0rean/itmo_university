@@ -1,8 +1,8 @@
 package com.greg.server.util.io;
 
-import com.greg.server.data.Organization;
+import com.greg.common.util.data.Organization;
+import com.greg.common.util.data.User;
 
-import java.net.InetAddress;
 import java.net.SocketAddress;
 import java.util.Scanner;
 
@@ -11,4 +11,5 @@ public interface Readable {
     String read();
     Scanner getScanner();
     SocketAddress getCurrentClient();
+    User readUser();
 }

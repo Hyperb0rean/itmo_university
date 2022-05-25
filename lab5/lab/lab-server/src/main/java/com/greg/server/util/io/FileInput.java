@@ -1,6 +1,6 @@
 package com.greg.server.util.io;
 
-import com.greg.server.data.*;
+import com.greg.common.util.data.*;
 import java.io.FileReader;
 import java.net.SocketAddress;
 import java.util.Scanner;
@@ -8,9 +8,11 @@ import java.util.Scanner;
 public class FileInput implements Readable{
 
     private final Scanner scanner;
+    private SocketAddress currentClient;
 
-    public FileInput(FileReader fr) {
+    public FileInput(FileReader fr, SocketAddress currentClient) {
         scanner = new Scanner(fr);
+        this.currentClient = currentClient;
     }
 
     public  String getName(){
@@ -47,7 +49,7 @@ public class FileInput implements Readable{
         Address address = new Address();
         address.setStreet(scanner.nextLine());
         Location location = new Location();
-        location.setX(scanner.nextLong());
+        location.setX(scanner.nextInt());
         scanner.nextLine();
         location.setY(scanner.nextInt());
         scanner.nextLine();
@@ -75,7 +77,7 @@ public class FileInput implements Readable{
 
     @Override
     public String read() {
-        return scanner.nextLine();
+        return scanner.nextLine() + " ";
     }
 
     public Scanner getScanner() {
@@ -84,6 +86,11 @@ public class FileInput implements Readable{
 
     @Override
     public SocketAddress getCurrentClient() {
+        return this.currentClient;
+    }
+
+    @Override
+    public User readUser() {
         return null;
     }
 }

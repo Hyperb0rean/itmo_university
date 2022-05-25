@@ -1,6 +1,6 @@
-package com.greg.client.data;
+package com.greg.common.util.data;
 
-import com.greg.client.exceptions.LimitExceededException;
+import com.greg.common.commands.exceptions.LimitExceededException;
 
 public class Address {
     private String street; //Длина строки не должна быть больше 166, Поле может быть null

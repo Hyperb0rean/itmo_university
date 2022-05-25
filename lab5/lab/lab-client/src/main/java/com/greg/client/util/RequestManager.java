@@ -1,17 +1,16 @@
 package com.greg.client.util;
 
-import com.greg.client.data.Organization;
+import com.greg.common.util.data.Organization;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.nio.charset.StandardCharsets;
 
 public class RequestManager {
 
-
+    private boolean responseCode = false;
 
     public Request makeRequest(String command,String argument){
         Request request = new Request();
@@ -21,18 +20,18 @@ public class RequestManager {
         return request;
     }
 
-    public Request makeRequest(String command, Organization organization){
+    public Request makeRequest(String command, Object data){
         Request request = new Request();
         request.setCommand(command);
         request.setArgument("");
-        request.setData(organization);
+        request.setData(data);
         return request;
     }
-    public Request makeRequest(String command,String argument, Organization organization){
+    public Request makeRequest(String command,String argument, Object data){
         Request request = new Request();
-        request.setArgument(" "+argument);
+        request.setArgument(argument);
         request.setCommand(command);
-        request.setData(organization);
+        request.setData(data);
         return request;
     }
 
@@ -41,14 +40,14 @@ public class RequestManager {
     public boolean sendRequest(Request request)  {
 
         ByteBuffer buffer = ByteBuffer.wrap(request.getBytes());
-        SocketAddress serverAdress = new InetSocketAddress("localhost",1337);
+        SocketAddress serverAddress = new InetSocketAddress("localhost",1337);
         try {
             DatagramChannel client = DatagramChannel.open().bind(null);
-            client.send(buffer,serverAdress);
+            client.send(buffer,serverAddress);
 
-            buffer = ByteBuffer.allocate(256);
+            buffer = ByteBuffer.allocate(4096);
             buffer.clear();
-            serverAdress = client.receive(buffer);
+            serverAddress = client.receive(buffer);
             buffer.flip();
             byte[] bytes = new byte[buffer.remaining()];
             buffer.get(bytes);
@@ -56,17 +55,20 @@ public class RequestManager {
             buffer.clear();
             StringBuilder msg = new StringBuilder("");
             for(int offset=0; offset<len; offset+=128) {
-                serverAdress = client.receive(buffer);
+                serverAddress = client.receive(buffer);
                 buffer.flip();
                 byte[] temp = new byte[buffer.remaining()];
                 buffer.get(temp);
                 msg.append(new String(temp));
                 buffer.clear();
             }
+
             if(msg.toString().toCharArray()[0] == '0'){
                 System.out.println(msg.substring(1));
+                responseCode = true;
             }else if (msg.toString().toCharArray()[0] == '1'){
                 System.err.println(msg.substring(1));
+                responseCode=false;
             }
 
         } catch (IOException e) {
@@ -75,6 +77,10 @@ public class RequestManager {
 
 
         return true;
+    }
+
+    public boolean isResponseCode() {
+        return responseCode;
     }
 
 }

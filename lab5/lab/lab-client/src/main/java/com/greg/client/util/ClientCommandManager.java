@@ -1,7 +1,7 @@
 package com.greg.client.util;
 
-import com.greg.client.exceptions.CommandNotExistsException;
-import com.greg.client.exceptions.EmptyInputException;
+import com.greg.common.commands.exceptions.CommandNotExistsException;
+import com.greg.common.commands.exceptions.EmptyInputException;
 
 import java.util.HashSet;
 
@@ -9,7 +9,11 @@ public class ClientCommandManager {
     private boolean programmState = true;
     private final HashSet<String> availibleCommands;
     private final RequestManager requestManager;
+    private  boolean isAuthorized =false;
 
+    public RequestManager getRequestManager() {
+        return requestManager;
+    }
 
     public ClientCommandManager() {
         this.availibleCommands = new HashSet<String>();
@@ -28,6 +32,8 @@ public class ClientCommandManager {
         availibleCommands.add("filter_contains_name");
         availibleCommands.add("print_ascending");
         availibleCommands.add("print_field_descending_employees_count");
+        availibleCommands.add("login");
+        availibleCommands.add("register");
         this.requestManager = new RequestManager();
     }
 
@@ -45,14 +51,14 @@ public class ClientCommandManager {
             else throw new EmptyInputException("Не корректный ввод команды, попробуйте еще раз");
             String argument = "";
             if(command.length()!=message.length()){
-                argument = message.substring(command.length()+1);
+                argument = message.substring(command.length());
             }
             if(!message.isEmpty()){
                 validation =  availibleCommands.contains(message.split(" ")[0]);
             }
             else throw new EmptyInputException("Не корректный ввод команды, попробуйте еще раз");
 
-                if(validation){
+                if(validation&isAuthorized){
                     if(command.equals("exit")){
                         programmState = false;
                     }
@@ -68,9 +74,16 @@ public class ClientCommandManager {
                         requestManager.sendRequest(requestManager.makeRequest(command, argument));
                     }
                 }
+                else if(validation){
+                    if(command.equals("register") || command.equals("login")){
+                        requestManager.sendRequest(requestManager.makeRequest(command,new Asker().askUser()));
+                        isAuthorized = requestManager.isResponseCode();
+                    }
+                    else throw new IllegalArgumentException("Требуется авторизироваться перед началом работы");
+                }
                 else throw new CommandNotExistsException("Такой команды не существует, попробуйте еще раз");
 
-        } catch (CommandNotExistsException | EmptyInputException e) {
+        } catch (CommandNotExistsException | EmptyInputException | IllegalArgumentException e) {
             System.err.println(e.getMessage());
         }
     }

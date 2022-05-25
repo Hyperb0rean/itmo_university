@@ -12,6 +12,8 @@ public class ExitCommand extends Command{
     @Override
     public boolean execute(String argument) {
         this.getManager().setProgramState(false);
+        System.out.println("Сервер остановлен");
+        System.exit(0);
         return true;
     }
 }

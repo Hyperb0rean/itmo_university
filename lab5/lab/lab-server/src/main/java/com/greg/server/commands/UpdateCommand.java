@@ -1,17 +1,22 @@
 package com.greg.server.commands;
 
-import com.greg.server.data.Organization;
-import com.greg.server.exceptions.IllegalArgumentException;
-import com.greg.server.exceptions.NoSuchElementException;
-import com.greg.server.util.ServerCommandManager;
+import com.greg.common.util.data.Organization;
+import com.greg.common.commands.exceptions.IllegalArgumentException;
+import com.greg.common.commands.exceptions.NoSuchElementException;
 import com.greg.server.util.CollectionManager;
+import com.greg.server.util.DatabaseManager;
+import com.greg.server.util.ServerCommandManager;
+import com.greg.server.util.FileManager;
+
+import java.sql.SQLException;
+import java.util.Iterator;
 
 public class UpdateCommand extends Command {
 
     private final CollectionManager target;
 
 
-    public UpdateCommand(ServerCommandManager manager,CollectionManager target) {
+    public UpdateCommand(ServerCommandManager manager, CollectionManager target) {
         super("update", "Обновить значение элемента коллекции, id которого равен заданному",manager);
         this.target = target;
     }
@@ -27,17 +32,32 @@ public class UpdateCommand extends Command {
                 Organization result = this.getManager().getInput().readOrganisation();
                 result.setId(Integer.parseInt(argument));
                 boolean idFoundFlag = false;
-                for (Organization o : target.getOrganizations()) {
-                    if (o.getId() == result.getId()) {
-                        idFoundFlag = true;
-                        o = result;
+                Iterator<Organization> iterator = target.getOrganizations().iterator();
+                while (iterator.hasNext()) {
+                    Organization s = iterator.next(); // must be called before you can call iterator.remove()
+                    if(s.getId()==result.getId())
+                    {
+                        iterator.remove();
+                        idFoundFlag=true;
+
                     }
                 }
                 if (!idFoundFlag) throw new NoSuchElementException("Не существует элемента с таким id");
+                else {
+                    if(target.getClass().equals(DatabaseManager.class))
+                    {
+                        DatabaseManager databaseManager = (DatabaseManager) target;
+                        databaseManager.remove(Integer.parseInt(argument), getManager().getCurrentUser());
+                        databaseManager.add(result, getManager().getCurrentUser());
+                    }
+
+                    target.getOrganizations().add(result);
+                }
+
                 this.getManager().getOutput().write("Элемент успешно обновлен!");
                 return true;
             } else throw new IllegalArgumentException("Невозможно применить команду без аргументов");
-        } catch (IllegalArgumentException | NumberFormatException | NoSuchElementException e) {
+        } catch (IllegalArgumentException | NumberFormatException | NoSuchElementException | SQLException e) {
             this.getManager().getOutput().error(e.getMessage());
             return false;
         }

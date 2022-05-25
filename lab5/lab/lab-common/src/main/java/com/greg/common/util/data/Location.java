@@ -1,7 +1,7 @@
-package com.greg.server.data;
+package com.greg.common.util.data;
 
 public class Location {
-    private Long x; //Поле не может быть null
+    private Integer x; //Поле не может быть null
     private Integer y; //Поле не может быть null
     private float z;
 
@@ -9,11 +9,11 @@ public class Location {
 
     }
 
-    public Long getX() {
+    public int getX() {
         return x;
     }
 
-    public void setX(Long x) {
+    public void setX(int x) {
         this.x = x;
     }
 
@@ -33,13 +33,13 @@ public class Location {
         this.z = z;
     }
 
-    public Location(Long x, Integer y, float z) {
+    public Location(int x, Integer y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public Location(Long x, Integer y) {
+    public Location(int x, Integer y) {
         this.x = x;
         this.y = y;
     }

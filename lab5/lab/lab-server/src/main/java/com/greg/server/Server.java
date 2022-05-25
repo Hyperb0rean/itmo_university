@@ -1,12 +1,9 @@
 package com.greg.server;
 
 import com.greg.server.commands.*;
-import com.greg.server.util.CollectionManager;
-import com.greg.server.util.io.RequestInput;
-import com.greg.server.util.ServerCommandManager;
-import com.greg.server.util.io.ResponseOutput;
-import com.greg.server.util.io.UserInput;
-import com.greg.server.util.io.UserOutput;
+import com.greg.server.util.io.*;
+import com.greg.server.util.*;
+
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -26,7 +23,9 @@ public final class Server {
         manager.setInput(new RequestInput(port,manager));
         manager.setOutput(new ResponseOutput(manager));
 
-        CollectionManager collection = new CollectionManager();
+        CollectionManager collection = new DatabaseManager();
+
+
         manager.getCommands().put("help", new HelpCommand(manager));
         manager.getCommands().put("info", new InfoCommand(manager,collection));
         manager.getCommands().put("show", new ShowCommand(manager,collection));
@@ -43,9 +42,26 @@ public final class Server {
         manager.getCommands().put("filter_contains_name", new FilterContainsNameCommand(manager,collection));
         manager.getCommands().put("print_ascending", new PrintAscendingCommand(manager,collection));
         manager.getCommands().put("print_field_descending_employees_count", new PrintFieldDescendingCommand(manager,collection));
+        manager.getCommands().put("register",new RegisterCommand(manager,collection));
+        manager.getCommands().put("login",new LoginCommand(manager,collection));
 
-        while (manager.isProgramState()) {
-            manager.executeCommand(manager.getInput().read());
-        }
+
+
+        new Thread(() -> {
+            while (manager.isProgramState()){
+                manager.executeCommand(manager.getInput().read());
+            }
+
+        }).start();
+
+        new Thread(() -> {
+            while (manager.isProgramState()){
+                String line = scanner.nextLine();
+                if(line.equals("exit") || line.equals("save")){
+                    manager.executeCommand(line+" ");
+                }
+            }
+        }).start();
+
     }
 }

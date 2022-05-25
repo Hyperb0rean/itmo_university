@@ -1,22 +1,18 @@
 package com.greg.server.commands;
 
-import com.greg.common.util.data.Organization;
 import com.greg.common.commands.exceptions.IllegalArgumentException;
+import com.greg.common.util.data.Organization;
+import com.greg.common.util.data.User;
 import com.greg.server.util.CollectionManager;
 import com.greg.server.util.DatabaseManager;
 import com.greg.server.util.ServerCommandManager;
-import com.greg.server.util.FileManager;
 
-import java.sql.Connection;
+public class RegisterCommand extends Command{
 
-public class AddCommand extends Command{
-
-    private final CollectionManager target;
-
-    public AddCommand( ServerCommandManager manager, CollectionManager target) {
-        super("add", "Добавить новый элемент в коллекцию",manager);
+    CollectionManager target;
+    public RegisterCommand(ServerCommandManager manager, CollectionManager target) {
+        super("register", "Зарегистрировать нового пользователя", manager);
         this.target = target;
-
     }
 
     public CollectionManager getTarget() {
@@ -27,17 +23,16 @@ public class AddCommand extends Command{
     public boolean execute(String argument) {
         try{
             if(argument == null || argument.isEmpty()){
-                Organization result = this.getManager().getInput().readOrganisation();
-                result.generateId();
+                User user = this.getManager().getInput().readUser();
+
 
                 if(target.getClass().equals(DatabaseManager.class))
                 {
                     DatabaseManager databaseManager = (DatabaseManager) target;
-                    databaseManager.add(result,getManager().getCurrentUser());
+                    databaseManager.insertUser(user);
                 }
 
-                target.getOrganizations().add(result);
-                this.getManager().getOutput().write("Элемент успешно добавлен!");
+                this.getManager().getOutput().write("Пользователь успешно зарегистрирован! Здравствуйте," + user.getName());
                 return true;
 
             }

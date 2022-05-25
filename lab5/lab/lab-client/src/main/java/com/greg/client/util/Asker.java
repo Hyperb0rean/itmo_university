@@ -1,6 +1,7 @@
 package com.greg.client.util;
 
-import com.greg.client.data.*;
+import com.greg.common.util.data.*;
+
 
 import java.util.Scanner;
 
@@ -8,12 +9,12 @@ public class Asker {
 
     Scanner scanner = new Scanner(System.in);
 
-    public  String askName(){
+    private   String askName(){
         System.out.println("Введите название организации:");
         return scanner.nextLine();
     }
 
-    public  Coordinates askCoordinates(){
+    private Coordinates askCoordinates(){
         Coordinates coordinates = new Coordinates();
         System.out.println("Введите координату x организации:");
         coordinates.setX(scanner.nextInt());
@@ -24,12 +25,12 @@ public class Asker {
         return coordinates;
     }
 
-    public  Float askAnnualTurnover(){
+    private   Float askAnnualTurnover(){
         System.out.println("Введите оборот организации:");
         return scanner.nextFloat();
     }
 
-    public   OrganizationType askOrgType(){
+    private OrganizationType askOrgType(){
         System.out.println("Выбереете тип организации из предложенных(числом):\n    1.GOVERNMENT\n" +
                 "    2.TRUST\n" +
                 "    3.PRIVATE_LIMITED_COMPANY\n" +
@@ -38,21 +39,21 @@ public class Asker {
         scanner.nextLine();
         return result;
     }
-    public  int askEmployeeCount(){
+    private   int askEmployeeCount(){
         System.out.println("Введите количество работников организации:");
         int result = scanner.nextInt();
         scanner.nextLine();
         return result;
     }
 
-    public  Address askPostalAdress(){
+    private Address askPostalAdress(){
         System.out.println("Введите почтовый адрес организации:");
         Address address = new Address();
         System.out.println("Введите название улицы организации:");
         address.setStreet(scanner.nextLine());
         Location location = new Location();
         System.out.println("Введите координату x адреса:");
-        location.setX(scanner.nextLong());
+        location.setX(scanner.nextInt());
         scanner.nextLine();
         System.out.println("Введите координату y адреса:");
         location.setY(scanner.nextInt());
@@ -64,7 +65,7 @@ public class Asker {
         return address;
     }
 
-    public  Organization askOrganisation(){
+    public Organization askOrganisation(){
         Organization organization = new Organization();
 
         organization.generateId();
@@ -77,5 +78,21 @@ public class Asker {
         organization.setPostalAddress(askPostalAdress());
 
         return organization;
+    }
+
+    public User askUser(){
+        User user = new User();
+        user.setName(askUsername());
+        user.setPassword(askPassword());
+        return user;
+    }
+
+    private String askUsername(){
+        System.out.println("Введите имя пользователя");
+        return  scanner.nextLine();
+    }
+    private String askPassword(){
+        System.out.println("Введите пароль");
+        return scanner.nextLine();
     }
 }

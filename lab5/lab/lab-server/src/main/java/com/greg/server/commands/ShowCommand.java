@@ -1,7 +1,8 @@
 package com.greg.server.commands;
 
-import com.greg.server.exceptions.IllegalArgumentException;
+import com.greg.common.commands.exceptions.IllegalArgumentException;
 import com.greg.server.util.CollectionManager;
+import com.greg.server.util.FileManager;
 import com.greg.server.util.ServerCommandManager;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -10,7 +11,7 @@ public class ShowCommand extends Command{
 
     private final CollectionManager target;
 
-    public ShowCommand(ServerCommandManager manager,CollectionManager target) {
+    public ShowCommand(ServerCommandManager manager, CollectionManager target) {
         super("show", "Вывести в стандартный поток вывода все элементы коллекции в строковом представлении",manager);
         this.target = target;
     }

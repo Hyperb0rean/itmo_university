@@ -1,10 +1,9 @@
 package com.greg.server.commands;
 
-import com.greg.server.exceptions.IllegalArgumentException;
+import com.greg.common.commands.exceptions.IllegalArgumentException;
 import com.greg.server.util.CollectionManager;
+import com.greg.server.util.FileManager;
 import com.greg.server.util.ServerCommandManager;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 public class FilterContainsNameCommand extends  Command{
     private final CollectionManager target;
@@ -22,13 +21,8 @@ public class FilterContainsNameCommand extends  Command{
     public boolean execute(String argument) {
         try{
             if(!argument.isEmpty()){
-//                for (Organization o:target.getOrganizations()) {
-//                    if(o.getName().contains(argument)){
-//                        System.out.println(o.toString());
-//                    }
-//                }
-                AtomicReference<String> result = new AtomicReference<>("");
-                target.getOrganizations().stream().filter(x -> x.getName().contains(argument)).forEach(o-> result.set(result + o.toString() + "\n"));
+                StringBuilder result = new StringBuilder();
+                target.getOrganizations().stream().filter(x -> x.getName().contains(argument)).forEach(o-> result.append(o).append("\n"));
                 this.getManager().getOutput().write(result.toString());
                 return true;
             }

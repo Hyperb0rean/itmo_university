@@ -1,7 +1,7 @@
-package com.greg.client.data;
+package com.greg.common.util.data;
 
-import com.greg.client.exceptions.LimitExceededException;
-import com.greg.client.exceptions.NullStringException;
+import com.greg.common.commands.exceptions.LimitExceededException;
+import com.greg.common.commands.exceptions.NullStringException;
 
 import java.util.Date;
 

@@ -1,6 +1,6 @@
 package com.greg.server.util.io;
 
-import com.greg.server.data.*;
+import com.greg.common.util.data.*;
 import com.greg.server.util.ServerCommandManager;
 
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class RequestInput implements Readable{
             this.server = server;
             System.out.println("Чтение данных...");
         } catch (IOException e) {
-            System.err.println("Произошла ошибка при попытке чтения данных. Подробнее\n" + e.getMessage());
+            //System.err.println("Произошла ошибка при попытке чтения данных. Подробнее\n" + e.getMessage());
         }
 
         ByteBuffer buffer = ByteBuffer.allocate(4096);
@@ -49,10 +49,7 @@ public class RequestInput implements Readable{
         } catch (IOException e) {
             System.err.println("Произошла ошибка при попытке чтения данных. Подробнее\n" + e.getMessage());
         }
-//        buffer.flip();
-//        byte[] bytes = new byte[buffer.remaining()];
-//        buffer.get(bytes);
-//        String msg = new String(bytes);
+
         byte[] buf = new byte[buffer.position()];
         for(int i =0; i< buf.length;i++){
             buf[i] = buffer.get(i);
@@ -71,9 +68,10 @@ public class RequestInput implements Readable{
         return currentClient;
     }
 
-    public  String askName(){
-        manager.getOutput().write("Введите название организации:");
-        return read();
+    @Override
+    public User readUser() {
+        return manager.getCurrentUser();
     }
+
 
 }
