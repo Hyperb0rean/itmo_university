@@ -5,6 +5,7 @@ import com.greg.server.util.ServerCommandManager;
 
 import java.io.IOException;
 import java.net.*;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.charset.StandardCharsets;
@@ -40,7 +41,7 @@ public class ResponseOutput implements Writable{
                 chunk=message.substring(offset,Math.min(offset+128,message.length()));
                 buffer = ByteBuffer.wrap(chunk.getBytes(StandardCharsets.UTF_8));
                 server.send(buffer,manager.getInput().getCurrentClient());
-                buffer.clear();
+                ((Buffer)buffer).clear();
             }
         } catch (IOException e) {
             System.out.println("Не удалось отослать сообщение на клиент. Подробнее: \n" + e.getMessage());

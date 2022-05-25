@@ -46,21 +46,23 @@ public final class Server {
 
 
 
+
+
+        new Thread(() -> {
+            while (manager.isProgramState()){
+                String line = scanner.nextLine();
+                if(line.equals("exit")){
+                    manager.executeCommand(line+"  ");
+                }
+            }
+        }).start();
+
+
         new Thread(() -> {
             while (manager.isProgramState()){
                 manager.executeCommand(manager.getInput().read());
             }
 
         }).start();
-
-        new Thread(() -> {
-            while (manager.isProgramState()){
-                String line = scanner.nextLine();
-                if(line.equals("exit")){
-                    manager.executeCommand(line+" ");
-                }
-            }
-        }).start();
-
     }
 }

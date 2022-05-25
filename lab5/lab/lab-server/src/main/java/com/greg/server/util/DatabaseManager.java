@@ -23,10 +23,10 @@ public class DatabaseManager extends CollectionManager{
         return connection;
     }
 
-    public DatabaseManager(){
+     public DatabaseManager(){
 
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:1099/studs","s335046","vch051");
+            connection = DriverManager.getConnection("jdbc:postgresql://pg:5432/studs","s335046","vch051");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -82,7 +82,7 @@ public class DatabaseManager extends CollectionManager{
         this.modDate = initDate;
     }
 
-    public void updateCollection() throws  SQLException{
+    synchronized public void updateCollection() throws  SQLException{
         this.organizations=new LinkedList<Organization>();
         Statement statement = connection.createStatement();
         ResultSet res = statement.executeQuery("SELECT * from organizations");
@@ -102,7 +102,7 @@ public class DatabaseManager extends CollectionManager{
         statement.close();
     }
 
-    public void add(Organization organization,User user) throws SQLException {
+    synchronized public void add(Organization organization,User user) throws SQLException {
 
             PreparedStatement statement = connection.prepareStatement("INSERT INTO organizations (id,\"name\",coord_X,coord_Y,\"date\",turn,empl,org_type,street,town_X,town_Y,town_Z,\"user\")" +
                     "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -125,24 +125,24 @@ public class DatabaseManager extends CollectionManager{
             statement.close();
     }
 
-    public void remove(int id,User user) throws SQLException {
+    synchronized public void remove(int id,User user) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("DELETE FROM organizations WHERE id = ? AND \"user\" = ?");
         statement.setInt(1,id);
         statement.setString(2, user.getName());
-        if(statement.executeUpdate() == 0) throw new SQLException("Не сущесствует элемента с таким id и владельцем");
+        if(statement.executeUpdate() == 0) throw new SQLException("Нет разрешения на изменение данного объекта");
         this.modDate = new Date();
         statement.close();
        // updateCollection();
     }
 
-    public void clear() throws SQLException {
+    synchronized public void clear() throws SQLException {
         Statement statement = connection.createStatement();
         statement.executeUpdate("DELETE from organizations");
         this.modDate = new Date();
         statement.close();
     }
 
-    public void findUser(User user) throws SQLException, IllegalArgumentException, NoSuchAlgorithmException {
+    synchronized public void findUser(User user) throws SQLException, IllegalArgumentException, NoSuchAlgorithmException {
 
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM users");
         ResultSet resultSet = statement.executeQuery();
@@ -165,7 +165,7 @@ public class DatabaseManager extends CollectionManager{
         statement.close();
 
     }
-    public void insertUser(User user) throws SQLException, NoSuchAlgorithmException {
+    synchronized public void insertUser(User user) throws SQLException, NoSuchAlgorithmException {
         PreparedStatement statement = connection.prepareStatement("INSERT INTO users (\"user\",password,salt,\"group\") VALUES (?,?,?,?)");
         statement.setString(1, user.getName());
 
