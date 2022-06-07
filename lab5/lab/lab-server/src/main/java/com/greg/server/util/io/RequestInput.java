@@ -20,7 +20,7 @@ public class RequestInput implements Readable{
     public RequestInput(int port, ServerCommandManager manager) {
         this.port = port;
         this.manager = manager;
-        InetSocketAddress address = new InetSocketAddress("helios.se.ifmo.ru", port);
+        InetSocketAddress address = new InetSocketAddress("localhost", port);
         System.out.println("Сервер запущен по адресу #" + address);
 
     }

@@ -2,11 +2,11 @@ package com.greg.client;
 
 
 import com.greg.client.util.ClientCommandManager;
-import com.greg.common.util.data.User;
 
-import java.io.IOException;
-import java.net.*;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.Scanner;
+
 
 public final class Client {
     private static DatagramSocket socket;

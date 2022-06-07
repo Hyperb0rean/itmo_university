@@ -28,7 +28,7 @@ public class ClearCommand extends Command{
                 if(target.getClass().equals(DatabaseManager.class))
                 {
                     DatabaseManager databaseManager = (DatabaseManager) target;
-                    databaseManager.clear();
+                    databaseManager.clear(getManager().getCurrentUser());
                 }
                 target.getOrganizations().clear();
                 this.getManager().getOutput().write("Коллекция успешно очищена!");

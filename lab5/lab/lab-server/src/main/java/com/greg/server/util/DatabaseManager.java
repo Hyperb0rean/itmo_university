@@ -26,7 +26,7 @@ public class DatabaseManager extends CollectionManager{
      public DatabaseManager(){
 
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://pg:5432/studs","s335046","vch051");
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:1099/studs","s335046","vch051");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -52,7 +52,8 @@ public class DatabaseManager extends CollectionManager{
                     "salt VARCHAR(64)," +
                     "\"group\" VARCHAR(16)" +
                     ");");
-            //statement.executeUpdate("CREATE SEQUENCE idOrganizations");
+
+            statement.executeUpdate("CREATE SEQUENCE IF NOT EXISTS idOrg");
 
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS organizations (" +
                     "id INT PRIMARY KEY, " +
@@ -104,25 +105,27 @@ public class DatabaseManager extends CollectionManager{
 
     synchronized public void add(Organization organization,User user) throws SQLException {
 
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO organizations (id,\"name\",coord_X,coord_Y,\"date\",turn,empl,org_type,street,town_X,town_Y,town_Z,\"user\")" +
-                    "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
-            statement.setInt(1,organization.getId());
-            statement.setString(2,organization.getName());
-            statement.setInt(3,organization.getCoordinates().getX());
-            statement.setFloat(4, (float) organization.getCoordinates().getY());
-            statement.setString(5, organization.getCreationDate().toString());
-            statement.setFloat(6,organization.getAnnualTurnover());
-            statement.setInt(7,organization.getEmployeesCount());
-            statement.setInt(8,organization.getType().ordinal());
-            statement.setString(9,organization.getPostalAddress().getStreet());
-            statement.setInt(10,organization.getPostalAddress().getTown().getX());
-            statement.setInt(11,organization.getPostalAddress().getTown().getY());
-            statement.setFloat(12,organization.getPostalAddress().getTown().getZ());
-            statement.setString(13, user.getName());
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO organizations (\"id\",\"name\",coord_X,coord_Y,\"date\",turn,empl,org_type,street,town_X,town_Y,town_Z,\"user\")" +
+                    "VALUES (nextval('idOrg'),?,?,?,?,?,?,?,?,?,?,?,?)");
+//            statement.setInt(1,organization.getId());
+            statement.setString(1,organization.getName());
+            statement.setInt(2,organization.getCoordinates().getX());
+            statement.setFloat(3, (float) organization.getCoordinates().getY());
+            statement.setString(4, organization.getCreationDate().toString());
+            statement.setFloat(5,organization.getAnnualTurnover());
+            statement.setInt(6,organization.getEmployeesCount());
+            statement.setInt(7,organization.getType().ordinal());
+            statement.setString(8,organization.getPostalAddress().getStreet());
+            statement.setInt(9,organization.getPostalAddress().getTown().getX());
+            statement.setInt(10,organization.getPostalAddress().getTown().getY());
+            statement.setFloat(11,organization.getPostalAddress().getTown().getZ());
+            statement.setString(12, user.getName());
 
             statement.executeUpdate();
+
             this.modDate = new Date();
             statement.close();
+            updateCollection();
     }
 
     synchronized public void remove(int id,User user) throws SQLException {
@@ -132,12 +135,13 @@ public class DatabaseManager extends CollectionManager{
         if(statement.executeUpdate() == 0) throw new SQLException("Нет разрешения на изменение данного объекта");
         this.modDate = new Date();
         statement.close();
-       // updateCollection();
+       updateCollection();
     }
 
-    synchronized public void clear() throws SQLException {
-        Statement statement = connection.createStatement();
-        statement.executeUpdate("DELETE from organizations");
+    synchronized public void clear(User user) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("DELETE from organizations WHERE \"user\" = ?");
+        statement.setString(1, user.getName());
+        statement.executeUpdate();
         this.modDate = new Date();
         statement.close();
     }

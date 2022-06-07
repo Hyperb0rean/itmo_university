@@ -5,9 +5,7 @@ import com.greg.common.commands.exceptions.IllegalArgumentException;
 import com.greg.server.util.CollectionManager;
 import com.greg.server.util.DatabaseManager;
 import com.greg.server.util.ServerCommandManager;
-import com.greg.server.util.FileManager;
 
-import java.sql.Connection;
 
 public class AddCommand extends Command{
 
@@ -36,7 +34,7 @@ public class AddCommand extends Command{
                     databaseManager.add(result,getManager().getCurrentUser());
                 }
 
-                target.getOrganizations().add(result);
+//                target.getOrganizations().add(result);
                 this.getManager().getOutput().write("Элемент успешно добавлен!");
                 return true;
 
