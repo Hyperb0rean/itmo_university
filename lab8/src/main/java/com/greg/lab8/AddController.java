@@ -1,15 +1,17 @@
 package com.greg.lab8;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.greg.lab8.client.util.*;
 import com.greg.lab8.common.util.data.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class AddController {
@@ -93,29 +95,43 @@ public class AddController {
         typeComboBox.getItems().addAll(Arrays.stream(OrganizationType.values()).map(Objects::toString).collect(Collectors.toList()));
 
         addButton.setOnAction(actionEvent -> {
-            Organization organization = new Organization();
-            organization.setName(nameText.getText());
-            organization.setCreationDate();
-            organization.setCoordinates(new Coordinates(Integer.parseInt(xText.getText()),Double.parseDouble(yText.getText())));
-            organization.setAnnualTurnover(Float.parseFloat(turnText.getText()));
-            organization.setEmployeesCount(Integer.parseInt(emplText.getText()));
-            organization.setType(OrganizationType.valueOf(typeComboBox.getValue()));
-            organization.setPostalAddress(new Address(streetText.getText(),new Location(Integer.parseInt(townXText.getText()),Integer.parseInt(townYText.getText()),Float.parseFloat(townZText.getText()))));
-            OrganisationHolder.setOrganization(organization);
 
-            ClientCommandManager commandManager = new ClientCommandManager();
-            RequestManager manager = commandManager.getRequestManager();
-            manager.sendRequest(manager.makeRequest(UserHolder.getUser().getName(),"add",OrganisationHolder.getOrganization()));
-            if(manager.isResponseCode()){
-                addButton.getScene().getWindow().hide();
-            }
-            else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Authorization Error");
-                alert.setHeaderText("Unable to authorise user");
-                alert.setContentText(manager.getResponseMessage());
-                alert.showAndWait();
-            }
+
+            Task<Void> task = new Task<Void>() {
+                @Override protected Void call() throws Exception {
+                    Organization organization = new Organization();
+                    organization.setName(nameText.getText());
+                    organization.setCreationDate();
+                    organization.setCoordinates(new Coordinates(Integer.parseInt(xText.getText()),Double.parseDouble(yText.getText())));
+                    organization.setAnnualTurnover(Float.parseFloat(turnText.getText()));
+                    organization.setEmployeesCount(Integer.parseInt(emplText.getText()));
+                    organization.setType(OrganizationType.valueOf(typeComboBox.getValue()));
+                    organization.setPostalAddress(new Address(streetText.getText(),new Location(Integer.parseInt(townXText.getText()),Integer.parseInt(townYText.getText()),Float.parseFloat(townZText.getText()))));
+                    OrganisationHolder.setOrganization(organization);
+
+                    ClientCommandManager commandManager = new ClientCommandManager();
+                    RequestManager manager = commandManager.getRequestManager();
+                    manager.sendRequest(manager.makeRequest(UserHolder.getUser().getName(),"add",OrganisationHolder.getOrganization()));
+
+                    Platform.runLater(() ->{
+                            if(manager.isResponseCode()){
+                                addButton.getScene().getWindow().hide();
+                            }
+                            else {
+                                Alert alert = new Alert(Alert.AlertType.ERROR);
+                                alert.setTitle("Authorization Error");
+                                alert.setHeaderText("Unable to authorise user");
+                                alert.setContentText(manager.getResponseMessage());
+                                alert.showAndWait();
+                            }
+                        });
+                    return null;
+                }
+            };
+
+            Thread th = new Thread(task);
+            th.setDaemon(true);
+            th.start();
         });
     }
 }

@@ -110,17 +110,9 @@ public class MainController {
         refresh();
 
 
-        ClientCommandManager commandManager = new ClientCommandManager();
-        RequestManager manager = commandManager.getRequestManager();
-        User user =  UserHolder.getUser();
-        manager.sendRequest(manager.makeRequest(user.getName(),"show",""));
-        GsonBuilder builder = new GsonBuilder();
+
         LinkedList<Organization> organizationsList = new LinkedList<>();
-        if(manager.isResponseCode()){
-            organizationsList = new LinkedList<>((ArrayList<Organization>) builder.create().fromJson(
-                    manager.getResponseMessage().toString(), new TypeToken<List<Organization>>(){}.getType()
-            ));
-        }
+
         organizations = FXCollections.observableArrayList(organizationsList);
 
 
@@ -146,13 +138,14 @@ public class MainController {
         Task<Void> task = new Task<Void>() {
             @Override protected Void call() throws Exception {
                 while (true){
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
+                    ClientCommandManager commandManager = new ClientCommandManager();
+                    RequestManager manager = commandManager.getRequestManager();
+                    User user =  UserHolder.getUser();
+                    manager.sendRequest(manager.makeRequest(user.getName(),"show",""));
+                    GsonBuilder builder = new GsonBuilder();
+
                     Platform.runLater(() ->{
-                        ClientCommandManager commandManager = new ClientCommandManager();
-                        RequestManager manager = commandManager.getRequestManager();
-                        User user =  UserHolder.getUser();
-                        manager.sendRequest(manager.makeRequest(user.getName(),"show",""));
-                        GsonBuilder builder = new GsonBuilder();
                         LinkedList<Organization> organizationsList = new LinkedList<>();
                         if(manager.isResponseCode()){
                             organizationsList = new LinkedList<>((ArrayList<Organization>) builder.create().fromJson(
@@ -172,57 +165,109 @@ public class MainController {
         th.start();
 
         addButton.setOnAction(actionEvent -> {
-            FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("add.fxml"));
-            Parent root = null;
-            try {
-                root = fxmlLoader.load();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Scene scene = new Scene(root, 400, 580);
-            Stage stage =new Stage();
-            stage.setTitle(addWindow);
-            stage.setResizable(false);
-            stage.setScene(scene);
-            stage.show();
+
+
+            Task<Void> task1 = new Task<Void>() {
+                @Override protected Void call() throws Exception {
+                   Platform.runLater(() -> {
+                       FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("add.fxml"));
+                       Parent root = null;
+                       try {
+                           root = fxmlLoader.load();
+                       } catch (IOException e) {
+                           e.printStackTrace();
+                       }
+                       Scene scene = new Scene(root, 400, 580);
+                       Stage stage =new Stage();
+                       stage.setTitle(addWindow);
+                       stage.setResizable(false);
+                       stage.setScene(scene);
+                       stage.show();
+                   });
+                    return null;
+                }
+            };
+
+            Thread th2 = new Thread(task1);
+            th2.setDaemon(true);
+            th2.start();
 
         });
 
         clearButton.setOnAction(actionEvent -> {
-            manager.sendRequest(manager.makeRequest(user.getName(),"clear",""));
+
+            Task<Void> task1 = new Task<Void>() {
+                @Override protected Void call() throws Exception {
+                    ClientCommandManager commandManager = new ClientCommandManager();
+                    RequestManager manager = commandManager.getRequestManager();
+                    manager.sendRequest(manager.makeRequest(UserHolder.getUser().getName(),"clear",""));
+                    return null;
+                }
+            };
+
+            Thread th2 = new Thread(task1);
+            th2.setDaemon(true);
+            th2.start();
 
         });
 
         updateButton.setOnAction(actionEvent -> {
-            FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("update.fxml"));
-            Parent root = null;
-            try {
-                root = fxmlLoader.load();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Scene scene = new Scene(root, 400, 580);
-            Stage stage =new Stage();
-            stage.setTitle(updateWindow);
-            stage.setResizable(false);
-            stage.setScene(scene);
-            stage.show();
+
+            Task<Void> task1 = new Task<Void>() {
+                @Override protected Void call() throws Exception {
+
+                        Platform.runLater(() ->{
+                            FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("update.fxml"));
+                            Parent root = null;
+                            try {
+                                root = fxmlLoader.load();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Scene scene = new Scene(root, 400, 580);
+                            Stage stage =new Stage();
+                            stage.setTitle(updateWindow);
+                            stage.setResizable(false);
+                            stage.setScene(scene);
+                            stage.show();
+                        });
+                    return null;
+                }
+            };
+
+            Thread th1 = new Thread(task1);
+            th1.setDaemon(true);
+            th1.start();
         });
 
         removeButton.setOnAction(actionEvent -> {
-            FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("remove.fxml"));
-            Parent root = null;
-            try {
-                root = fxmlLoader.load();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Scene scene = new Scene(root, 400, 580);
-            Stage stage =new Stage();
-            stage.setTitle(removeWindow);
-            stage.setResizable(false);
-            stage.setScene(scene);
-            stage.show();
+
+
+            Task<Void> task1 = new Task<Void>() {
+                @Override protected Void call() throws Exception {
+
+                        Platform.runLater(() ->{
+                            FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("remove.fxml"));
+                            Parent root = null;
+                            try {
+                                root = fxmlLoader.load();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Scene scene = new Scene(root, 400, 580);
+                            Stage stage =new Stage();
+                            stage.setTitle(removeWindow);
+                            stage.setResizable(false);
+                            stage.setScene(scene);
+                            stage.show();
+                        });
+                    return null;
+                }
+            };
+
+            Thread th1 = new Thread(task1);
+            th1.setDaemon(true);
+            th1.start();
         });
 
         vizualizationButton.setOnAction(actionEvent -> {
@@ -264,21 +309,37 @@ public class MainController {
         });
 
         localizationButton.setOnAction(actionEvent -> {
-            FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("localization.fxml"));
-            Parent root = null;
-            try {
-                root = fxmlLoader.load();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Scene scene = new Scene(root, 400, 580);
-            Stage stage =new Stage();
-            stage.setTitle(localizeWindow);
-            stage.setResizable(false);
-            stage.setScene(scene);
-            localizationButton.getScene().getWindow().hide();
-            stage.show();
-            refresh();
+
+
+
+            Task<Void> task1 = new Task<Void>() {
+                @Override protected Void call() throws Exception {
+                        Platform.runLater(() ->{
+
+                            FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("localization.fxml"));
+                            Parent root = null;
+                            try {
+                                root = fxmlLoader.load();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Scene scene = new Scene(root, 400, 580);
+                            Stage stage =new Stage();
+                            stage.setTitle(localizeWindow);
+                            stage.setResizable(false);
+                            stage.setScene(scene);
+                            localizationButton.getScene().getWindow().hide();
+                            stage.show();
+                            refresh();
+
+                        });
+                        return null;
+                }
+            };
+
+            Thread th1 = new Thread(task1);
+            th1.setDaemon(true);
+            th1.start();
 
 
 

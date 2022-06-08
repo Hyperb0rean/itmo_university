@@ -41,7 +41,7 @@ public class RequestManager {
 
 
 
-    public boolean sendRequest(Request request)  {
+    synchronized public boolean sendRequest(Request request)  {
 
         ByteBuffer buffer = ByteBuffer.wrap(request.getBytes());
         SocketAddress serverAddress = new InetSocketAddress("localhost",1337);

@@ -43,7 +43,7 @@
          </children></AnchorPane>
       <AnchorPane layoutX="200.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #FAFAFA;">
          <children>
-            <TableView fx:id="organisationsTableView" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: transparent;" stylesheets="table.css">
+            <TableView fx:id="organisationsTableView" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: transparent;" >
                <columns>
                   <TableColumn fx:id="id" prefWidth="32.0" text="ID" />
                   <TableColumn fx:id="name" prefWidth="86.40000915527344" text="NAME" />

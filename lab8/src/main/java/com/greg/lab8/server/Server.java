@@ -60,12 +60,12 @@ public final class Server {
 
         new Thread(() -> {
             while (manager.isProgramState()){
-              //  try {
-                   // Thread.sleep(10000);
+                try {
+                    Thread.sleep(5000);
                     manager.executeCommand(manager.getInput().read());
-             //   } catch (InterruptedException e) {
-              //      e.printStackTrace();
-              //  }
+               } catch (InterruptedException e) {
+                    e.printStackTrace();
+               }
 
             }
 
